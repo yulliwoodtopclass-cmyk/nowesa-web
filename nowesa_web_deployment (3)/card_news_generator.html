@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>노스웨스트 사람들 (NOWESA) | 축구 카드뉴스 생성기</title>
+  <style>
+    :root {
+      --bg-main: #080c14;
+      --bg-card: #0f172a;
+      --bg-card-hover: #16223b;
+      --bg-input: #151f33;
+      --border-color: #1e2c47;
+      --border-highlight: #2c426b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --everton-blue: #003399;
+      --everton-royal: #0047bb;
+      --everton-light: #38bdf8;
+      --everton-glow: rgba(0, 71, 187, 0.35);
+      --font-stack: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-stack);
+      line-height: 1.5;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 71, 187, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(0, 51, 153, 0.09) 0%, transparent 45%);
+      background-attachment: fixed;
+      padding-bottom: 60px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-highlight); }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8, 12, 20, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      height: 70px;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      text-decoration: none;
+      color: #fff;
+    }
+    .logo-badge {
+      background: linear-gradient(135deg, #003399, #0052cc);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      box-shadow: 0 2px 10px rgba(0, 51, 153, 0.4);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #0047bb, #003399);
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(0, 71, 187, 0.35);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0055dd, #003dbb);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 71, 187, 0.5);
+    }
+    .btn-secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-highlight);
+    }
+    .btn-success {
+      background: linear-gradient(135deg, #00c853, #009624);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(0, 200, 83, 0.3);
+    }
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 200, 83, 0.45);
+    }
+
+    /* App Title Header */
+    .app-title-area {
+      padding: 30px 0 20px;
+      text-align: center;
+    }
+    .app-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      background: rgba(0, 71, 187, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--everton-light);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .app-heading {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      background: linear-gradient(180deg, #fff 40%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .app-sub {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Editor Layout: 2 Columns */
+    .editor-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 32px;
+      margin-top: 20px;
+      align-items: start;
+    }
+
+    /* Left: Preview Panel */
+    .preview-panel {
+      position: sticky;
+      top: 90px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+    .canvas-wrap {
+      width: 100%;
+      max-width: 520px;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border-highlight);
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #cardCanvas {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .canvas-actions {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      max-width: 520px;
+      margin-top: 20px;
+    }
+
+    /* Right: Control Panel */
+    .controls-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+
+    .section-block {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 24px;
+    }
+    .section-block:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+    }
+
+    /* Template Presets Grid */
+    .presets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+    }
+    .preset-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-card:hover {
+      border-color: var(--everton-royal);
+      background: var(--bg-card-hover);
+    }
+    .preset-card.active {
+      border-color: var(--everton-light);
+      background: rgba(0, 71, 187, 0.25);
+      box-shadow: 0 0 12px rgba(0, 71, 187, 0.4);
+    }
+    .preset-icon {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+    .preset-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .preset-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Upload Box */
+    .upload-box {
+      border: 2px dashed var(--border-color);
+      background: var(--bg-input);
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 14px;
+    }
+    .upload-box:hover {
+      border-color: var(--everton-light);
+      background: rgba(0, 71, 187, 0.1);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+    .form-control {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      border-color: var(--everton-royal);
+    }
+    textarea.form-control {
+      min-height: 80px;
+      resize: vertical;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Color Chips */
+    .color-picker-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .color-chip {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .color-chip:hover {
+      transform: scale(1.15);
+    }
+    .color-chip.active {
+      border-color: #fff;
+      transform: scale(1.15);
+      box-shadow: 0 0 8px rgba(255,255,255,0.4);
+    }
+    .color-input-native {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    /* Range Sliders */
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slider-input {
+      flex: 1;
+      accent-color: var(--everton-royal);
+      cursor: pointer;
+    }
+    .slider-val {
+      font-size: 0.82rem;
+      color: var(--everton-light);
+      font-weight: 700;
+      min-width: 45px;
+      text-align: right;
+    }
+
+    /* Radio / Toggle Pills */
+    .pill-group {
+      display: flex;
+      gap: 8px;
+      background: var(--bg-input);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+    .pill-btn {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .pill-btn.active {
+      background: var(--everton-royal);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 71, 187, 0.4);
+    }
+
+    /* Checkbox toggle */
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .checkbox-label input {
+      accent-color: var(--everton-royal);
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid var(--everton-light);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .editor-layout {
+        grid-template-columns: 1fr;
+      }
+      .preview-panel {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-badge">NOWESA</span>
+        <span>노스웨스트 사람들 카드뉴스 스튜디오</span>
+      </a>
+
+      <div class="header-actions">
+        <a href="index.html" class="btn btn-secondary" style="font-size: 0.82rem; padding: 8px 14px;">
+          <span>🏠</span> 랜딩페이지로 이동
+        </a>
+        <button class="btn btn-primary" onclick="downloadCardNews()" style="font-size: 0.82rem; padding: 8px 16px;">
+          <span>📥</span> 카드뉴스 다운로드
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Title Area -->
+  <div class="container app-title-area">
+    <div class="app-tag">⚽ NOWESA OFFICIAL STUDIO</div>
+    <h1 class="app-heading">축구 소식 · 단관 · 직관투어 카드뉴스 생성기</h1>
+    <p class="app-sub">템플릿을 선택하거나 직접 배경 이미지를 올려 인스타그램 & 커뮤니티용 고화질 카드뉴스를 1분 만에 완성하세요.</p>
+  </div>
+
+  <!-- Main Editor Layout -->
+  <div class="container editor-layout">
+
+    <!-- LEFT: Preview Canvas & Download -->
+    <div class="preview-panel">
+      <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">실시간 캔버스 미리보기</span>
+        <span id="canvasDimLabel" style="font-size: 0.75rem; color: var(--everton-light); background: rgba(0,71,187,0.2); padding: 2px 8px; border-radius: 4px;">1080 x 1080 px (1:1)</span>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="cardCanvas" width="1080" height="1080"></canvas>
+      </div>
+
+      <div class="canvas-actions">
+        <button class="btn btn-primary" style="flex: 1.5; padding: 13px;" onclick="downloadCardNews()">
+          <span>📥</span> 고화질 PNG 다운로드
+        </button>
+        <button class="btn btn-secondary" style="flex: 1; padding: 13px;" onclick="copyCardToClipboard()">
+          <span>📋</span> 클립보드 복사
+        </button>
+      </div>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 10px;">
+        ※ 다운로드 버튼 클릭 시 즉시 1080px 고화질 완성본 PNG 파일로 저장됩니다.
+      </p>
+    </div>
+
+    <!-- RIGHT: Controls Panel -->
+    <div class="controls-panel">
+
+      <!-- 1. Template Presets & Upload -->
+      <div class="section-block">
+        <div class="section-title">
+          <span>🎨</span> 1. 템플릿 선택 및 배경 설정
+        </div>
+
+        <div class="presets-grid" id="presetsGrid">
+          <div class="preset-card active" onclick="applyPreset('breaking')">
+            <div class="preset-icon">🚨</div>
+            <div class="preset-name">속보 / 오피셜</div>
+            <div class="preset-sub">이적·경기결과</div>
+          </div>
+          <div class="preset-card" onclick="applyPreset('viewing')">
+            <div class="preset-icon">🍻</div>
+            <div class="preset-name">펍 단체관람</div>
+            <div class="preset-sub">더비 매치데이</div>
+          </div>
+          <div class="preset-card" onclick="applyPreset('tour')">
+            <div class="preset-icon">✈️</div>
+            <div class="preset-name">영국 직관투어</div>
+            <div class="preset-sub">안필드·구디슨</div>
+          </div>
+          <div class="preset-card" onclick="applyPreset('youtube')">
+            <div class="preset-icon">🎙️</div>
+            <div class="preset-name">유튜브 신규영상</div>
+            <div class="preset-sub">노스웨스트 설전</div>
+          </div>
+          <div class="preset-card" onclick="applyPreset('tactics')">
+            <div class="preset-icon">📊</div>
+            <div class="preset-name">전술 리뷰 / 평점</div>
+            <div class="preset-sub">심층 전술해부</div>
+          </div>
+        </div>
+
+        <!-- Custom Image Upload -->
+        <div class="upload-box" onclick="document.getElementById('bgFileInput').click()">
+          <input type="file" id="bgFileInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+          <div style="font-size: 1.6rem; margin-bottom: 4px;">📁</div>
+          <div style="font-size: 0.9rem; font-weight: 700; color: #fff;">내 템플릿 / 배경 이미지 업로드</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">선수 사진, 스타디움 직관 사진, 직접 만든 템플릿을 등록하세요 (JPG, PNG)</div>
+        </div>
+
+        <!-- Canvas Ratio -->
+        <div style="margin-top: 14px;">
+          <label class="form-label">카드뉴스 규격 (인스타그램 최적화)</label>
+          <div class="pill-group">
+            <button class="pill-btn active" id="ratioSquare" onclick="setAspectRatio(1080, 1080, this)">정사각형 1:1 (피드)</button>
+            <button class="pill-btn" id="ratioPortrait" onclick="setAspectRatio(1080, 1350, this)">세로형 4:5 (카드뉴스/릴스)</button>
+          </div>
+        </div>
+
+        <!-- Background Overlay Darkness -->
+        <div style="margin-top: 14px;">
+          <div class="form-label">
+            <span>배경 어둡기 (글씨 가독성)</span>
+            <span class="slider-val" id="overlayVal">50%</span>
+          </div>
+          <div class="slider-wrap">
+            <input type="range" class="slider-input" min="0" max="90" value="50" oninput="updateSetting('bgOverlay', this.value); document.getElementById('overlayVal').innerText = this.value + '%'">
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Category Badge & Headline -->
+      <div class="section-block">
+        <div class="section-title">
+          <span>🏷️</span> 2. 카테고리 태그 및 배지
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" style="margin: 0;">
+            <label class="form-label">카테고리 태그 문구</label>
+            <input type="text" class="form-control" id="tagTextInput" value="[🚨 NOWESA BREAKING]" oninput="updateSetting('tagText', this.value)">
+          </div>
+          <div class="form-group" style="margin: 0;">
+            <label class="form-label">태그 배경 색상</label>
+            <div class="color-picker-row">
+              <input type="color" class="color-input-native" id="tagBgPicker" value="#0047bb" onchange="updateSetting('tagBg', this.value)">
+              <div class="color-chip" style="background: #0047bb;" onclick="setColor('tagBg', '#0047bb', 'tagBgPicker')"></div>
+              <div class="color-chip" style="background: #ff3366;" onclick="setColor('tagBg', '#ff3366', 'tagBgPicker')"></div>
+              <div class="color-chip" style="background: #00c853;" onclick="setColor('tagBg', '#00c853', 'tagBgPicker')"></div>
+              <div class="color-chip" style="background: #f59e0b;" onclick="setColor('tagBg', '#f59e0b', 'tagBgPicker')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Title Customization -->
+      <div class="section-block">
+        <div class="section-title">
+          <span>✍️</span> 3. 뉴스 제목 (메인 타이틀)
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">제목 내용 (줄바꿈 지원)</label>
+          <textarea class="form-control" id="titleTextInput" oninput="updateSetting('titleText', this.value)" style="font-size: 1rem; font-weight: 700; min-height: 70px;">노스웨스트 더비 승부처!
+슬롯의 압박 vs 텐하흐의 전환</textarea>
+        </div>
+
+        <div class="form-row">
+          <!-- Font Size -->
+          <div class="form-group">
+            <div class="form-label">
+              <span>제목 글자 크기</span>
+              <span class="slider-val" id="titleSizeVal">64px</span>
+            </div>
+            <div class="slider-wrap">
+              <input type="range" class="slider-input" min="36" max="96" value="64" oninput="updateSetting('titleSize', this.value); document.getElementById('titleSizeVal').innerText = this.value + 'px'">
+            </div>
+          </div>
+
+          <!-- Color Picker -->
+          <div class="form-group">
+            <label class="form-label">제목 글자 색상</label>
+            <div class="color-picker-row">
+              <input type="color" class="color-input-native" id="titleColorPicker" value="#ffffff" onchange="updateSetting('titleColor', this.value)">
+              <div class="color-chip active" style="background: #ffffff;" onclick="setColor('titleColor', '#ffffff', 'titleColorPicker')"></div>
+              <div class="color-chip" style="background: #38bdf8;" onclick="setColor('titleColor', '#38bdf8', 'titleColorPicker')"></div>
+              <div class="color-chip" style="background: #fde047;" onclick="setColor('titleColor', '#fde047', 'titleColorPicker')"></div>
+              <div class="color-chip" style="background: #ff4d6d;" onclick="setColor('titleColor', '#ff4d6d', 'titleColorPicker')"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alignment -->
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label">제목 정렬</label>
+          <div class="pill-group">
+            <button class="pill-btn active" id="alignLeft" onclick="setTextAlign('left', this)">왼쪽 정렬</button>
+            <button class="pill-btn" id="alignCenter" onclick="setTextAlign('center', this)">가운데 정렬</button>
+            <button class="pill-btn" id="alignRight" onclick="setTextAlign('right', this)">오른쪽 정렬</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Body Content Customization -->
+      <div class="section-block">
+        <div class="section-title">
+          <span>📝</span> 4. 뉴스 본문 / 상세 내용
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">상세 본문 내용</label>
+          <textarea class="form-control" id="bodyTextInput" oninput="updateSetting('bodyText', this.value)" style="min-height: 110px;">• 경기 핵심 관전 포인트 3선 미드필더 전술 완벽 해부
+• 터치라인 트랩 수비와 2차 압박 타이밍 분석
+• 유튜브 [노스웨스트 사람들] 채널에서 풀버전 영상 시청 가능!</textarea>
+        </div>
+
+        <div class="form-row">
+          <!-- Body Size -->
+          <div class="form-group">
+            <div class="form-label">
+              <span>본문 글자 크기</span>
+              <span class="slider-val" id="bodySizeVal">32px</span>
+            </div>
+            <div class="slider-wrap">
+              <input type="range" class="slider-input" min="20" max="48" value="32" oninput="updateSetting('bodySize', this.value); document.getElementById('bodySizeVal').innerText = this.value + 'px'">
+            </div>
+          </div>
+
+          <!-- Body Color -->
+          <div class="form-group">
+            <label class="form-label">본문 글자 색상</label>
+            <div class="color-picker-row">
+              <input type="color" class="color-input-native" id="bodyColorPicker" value="#cbd5e1" onchange="updateSetting('bodyColor', this.value)">
+              <div class="color-chip active" style="background: #cbd5e1;" onclick="setColor('bodyColor', '#cbd5e1', 'bodyColorPicker')"></div>
+              <div class="color-chip" style="background: #ffffff;" onclick="setColor('bodyColor', '#ffffff', 'bodyColorPicker')"></div>
+              <div class="color-chip" style="background: #94a3b8;" onclick="setColor('bodyColor', '#94a3b8', 'bodyColorPicker')"></div>
+              <div class="color-chip" style="background: #38bdf8;" onclick="setColor('bodyColor', '#38bdf8', 'bodyColorPicker')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Footer & Brand Settings -->
+      <div class="section-block">
+        <div class="section-title">
+          <span>🛡️</span> 5. 푸터 일시 / 공식 배지 설정
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">추가 정보 (일시, 장소 또는 해시태그)</label>
+          <input type="text" class="form-control" id="footerTextInput" value="매주 화·금 19:00 업로드 | @nowesa.official" oninput="updateSetting('footerText', this.value)">
+        </div>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="showBadgeCheck" checked onchange="updateSetting('showBadge', this.checked)">
+            <span>NOWESA 공식 엠블럼 배지 표시</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="showWatermarkCheck" checked onchange="updateSetting('showWatermark', this.checked)">
+            <span>인스타그램(@nowesa.official) 워터마크 표시</span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toastBox">
+    <span id="toastIcon">✨</span>
+    <span id="toastMsg">카드뉴스가 다운로드되었습니다!</span>
+  </div>
+
+  <script>
+    // Canvas & Settings State
+    const canvas = document.getElementById('cardCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const state = {
+      width: 1080,
+      height: 1080,
+      bgMode: 'gradient', // 'gradient' or 'customImage'
+      customImage: null,
+      bgOverlay: 50, // 0 to 90
+      gradientTheme: 'everton',
+      
+      // Tag
+      tagText: '[🚨 NOWESA BREAKING]',
+      tagBg: '#0047bb',
+      tagColor: '#ffffff',
+      
+      // Title
+      titleText: `노스웨스트 더비 승부처!
+슬롯의 압박 vs 텐하흐의 전환`,
+      titleSize: 64,
+      titleColor: '#ffffff',
+      textAlign: 'left', // left, center, right
+      
+      // Body
+      bodyText: `• 경기 핵심 관전 포인트 3선 미드필더 전술 완벽 해부
+• 터치라인 트랩 수비와 2차 압박 타이밍 분석
+• 유튜브 [노스웨스트 사람들] 채널에서 풀버전 영상 시청 가능!`,
+      bodySize: 32,
+      bodyColor: '#cbd5e1',
+      
+      // Footer
+      footerText: '매주 화·금 19:00 업로드 | @nowesa.official',
+      showBadge: true,
+      showWatermark: true
+    };
+
+    // Presets definitions
+    const PRESETS = {
+      breaking: {
+        gradientTheme: 'breaking',
+        tagText: '[🚨 NOWESA BREAKING]',
+        tagBg: '#ff3366',
+        titleText: `오피셜: 노스웨스트 이적 완료!
+핵심 미드필더 1,200억 전격 영입`,
+        titleSize: 66,
+        titleColor: '#ffffff',
+        bodyText: `• 메디컬 테스트 통과 및 5년 계약 체결 오피셜 발표
+• 등번호 8번 배정, 다가오는 주말 더비전 선발 출전 유력
+• 현지 팬 반응: "중원 퀄리티 한 단계 업그레이드됐다"`,
+        bodySize: 32,
+        bodyColor: '#e2e8f0',
+        footerText: 'NOWESA 오피셜 리포트 | @nowesa.official',
+        textAlign: 'left'
+      },
+      viewing: {
+        gradientTheme: 'viewing',
+        tagText: '[🍻 매치데이 단관 모집]',
+        tagBg: '#0047bb',
+        titleText: `노스웨스트 더비 단체관람!
+KOP vs 붉은악마 펍 끝장 대결`,
+        titleSize: 62,
+        titleColor: '#ffffff',
+        bodyText: `• 일시: 2026. 10. 18 (토) 20:00 (킥오프 30분 전 입장)
+• 장소: 강남 NOWESA 풋볼 펍 (선착순 80석)
+• 혜택: 생맥주 1잔 & 나초 기본 제공 + 스코어 맞히기 경품 추첨!
+• 신청: 프로필 링크 구글폼 접수 (@nowesa.official)`,
+        bodySize: 30,
+        bodyColor: '#e2e8f0',
+        footerText: '노스웨스트 사람들 오프라인 이벤트 | @nowesa.official',
+        textAlign: 'left'
+      },
+      tour: {
+        gradientTheme: 'everton',
+        tagText: '[✈️ 2026/27 직관 원정대]',
+        tagBg: '#003399',
+        titleText: `영국 북서부 스타디움 투어!
+안필드·올드트래퍼드·구디슨파크`,
+        titleSize: 60,
+        titleColor: '#38bdf8',
+        bodyText: `• 7박 9일 잉글랜드 노스웨스트 성지 순례 투어
+• 프리미어리그 빅매치 2경기 1등석 직관 티켓 100% 보장
+• 축구 유튜브 크리에이터 전 일정 동행 & 펍 투어
+• 1차 얼리버드 마감 임박 (선착순 16명)`,
+        bodySize: 30,
+        bodyColor: '#cbd5e1',
+        footerText: '직관 문의: contact@nowesa.com | @nowesa.official',
+        textAlign: 'left'
+      },
+      youtube: {
+        gradientTheme: 'youtube',
+        tagText: '[📺 EP.48 업로드 완료]',
+        tagBg: '#e60000',
+        titleText: `“이게 축구냐?” 더비 끝나고
+맥주 마시며 나눈 노필터 설전`,
+        titleSize: 64,
+        titleColor: '#ffffff',
+        bodyText: `• 슬롯 감독의 파격적인 풀백 인버티드 전술 완벽 해부
+• 후반 85분 극장골 직후 현지 안필드 KOP석 직관 리액션
+• 유튜브에서 지금 바로 시청하세요! (프로필 링크)`,
+        bodySize: 32,
+        bodyColor: '#e2e8f0',
+        footerText: '유튜브 [노스웨스트 사람들] 검색 | @nowesa.official',
+        textAlign: 'left'
+      },
+      tactics: {
+        gradientTheme: 'tactics',
+        tagText: '[📊 피치 위 현미경]',
+        tagBg: '#0f766e',
+        titleText: `경기 M.O.M & 전술 분석표:
+하프스페이스를 지배한 사나이`,
+        titleSize: 62,
+        titleColor: '#5eead4',
+        bodyText: `• 패스 성공률 94.2% / 키패스 5회 / 인터셉트 4회
+• 3미들 압박 시프트로 상대 턴오버 12회 유도
+• 현대 축구 빌드업의 교과서 같은 전환 플레이`,
+        bodySize: 32,
+        bodyColor: '#ccfbf1',
+        footerText: 'NOWESA TACTICAL RADAR | @nowesa.official',
+        textAlign: 'left'
+      }
+    };
+
+    function applyPreset(key) {
+      const p = PRESETS[key];
+      if (!p) return;
+
+      document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
+      if (event && event.currentTarget) event.currentTarget.classList.add('active');
+
+      state.gradientTheme = p.gradientTheme;
+      state.tagText = p.tagText;
+      state.tagBg = p.tagBg;
+      state.titleText = p.titleText;
+      state.titleSize = p.titleSize;
+      state.titleColor = p.titleColor;
+      state.bodyText = p.bodyText;
+      state.bodySize = p.bodySize;
+      state.bodyColor = p.bodyColor;
+      state.footerText = p.footerText;
+      state.textAlign = p.textAlign;
+      state.bgMode = 'gradient';
+
+      // Update input fields
+      document.getElementById('tagTextInput').value = p.tagText;
+      document.getElementById('tagBgPicker').value = p.tagBg;
+      document.getElementById('titleTextInput').value = p.titleText;
+      document.getElementById('titleSizeVal').innerText = p.titleSize + 'px';
+      document.getElementById('titleColorPicker').value = p.titleColor;
+      document.getElementById('bodyTextInput').value = p.bodyText;
+      document.getElementById('bodySizeVal').innerText = p.bodySize + 'px';
+      document.getElementById('bodyColorPicker').value = p.bodyColor;
+      document.getElementById('footerTextInput').value = p.footerText;
+
+      renderCard();
+      showToast(`'${p.tagText}' 템플릿이 적용되었습니다!`);
+    }
+
+    function setAspectRatio(w, h, btn) {
+      state.width = w;
+      state.height = h;
+      canvas.width = w;
+      canvas.height = h;
+
+      document.querySelectorAll('.pill-group .pill-btn').forEach(b => {
+        if (b.id === 'ratioSquare' || b.id === 'ratioPortrait') b.classList.remove('active');
+      });
+      btn.classList.add('active');
+
+      document.getElementById('canvasDimLabel').innerText = `${w} x ${h} px (${w === h ? '1:1' : '4:5'})`;
+      renderCard();
+    }
+
+    function setTextAlign(align, btn) {
+      state.textAlign = align;
+      document.querySelectorAll('#alignLeft, #alignCenter, #alignRight').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCard();
+    }
+
+    function updateSetting(key, val) {
+      state[key] = val;
+      renderCard();
+    }
+
+    function setColor(key, color, pickerId) {
+      state[key] = color;
+      if (pickerId) document.getElementById(pickerId).value = color;
+      renderCard();
+    }
+
+    // Custom Image Upload
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          state.customImage = img;
+          state.bgMode = 'customImage';
+          renderCard();
+          showToast('배경 이미지가 정상적으로 등록되었습니다! 📸');
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Main Canvas Render Engine
+    function renderCard() {
+      const w = state.width;
+      const h = state.height;
+
+      // 1. Draw Background
+      if (state.bgMode === 'customImage' && state.customImage) {
+        // Draw image cover
+        drawImageCover(ctx, state.customImage, 0, 0, w, h);
+      } else {
+        drawGradientBackground(ctx, w, h, state.gradientTheme);
+      }
+
+      // 2. Draw Dark Overlay Dimmer
+      const overlayAlpha = state.bgOverlay / 100;
+      ctx.fillStyle = `rgba(5, 8, 15, ${overlayAlpha})`;
+      ctx.fillRect(0, 0, w, h);
+
+      // 3. Draw Decorative Stadium Grid & Glow
+      drawStadiumDecorations(ctx, w, h);
+
+      // Margins & Safe Zone
+      const paddingX = 70;
+      let currentY = 80;
+
+      // 4. Header Bar: NOWESA Brand Crest & Date
+      if (state.showBadge) {
+        drawHeaderBrand(ctx, paddingX, currentY, w);
+        currentY += 80;
+      } else {
+        currentY += 20;
+      }
+
+      // 5. Category Tag
+      if (state.tagText && state.tagText.trim()) {
+        currentY = drawCategoryTag(ctx, state.tagText.trim(), paddingX, currentY);
+        currentY += 32;
+      }
+
+      // 6. Title (Main Headline)
+      ctx.save();
+      ctx.fillStyle = state.titleColor;
+      ctx.font = `900 ${state.titleSize}px var(--font-stack), sans-serif`;
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+      ctx.shadowBlur = 16;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 4;
+
+      const titleLines = state.titleText.split('\n');
+      const titleLineHeight = state.titleSize * 1.25;
+
+      for (let line of titleLines) {
+        let alignX = paddingX;
+        if (state.textAlign === 'center') {
+          alignX = w / 2;
+          ctx.textAlign = 'center';
+        } else if (state.textAlign === 'right') {
+          alignX = w - paddingX;
+          ctx.textAlign = 'right';
+        } else {
+          ctx.textAlign = 'left';
+        }
+        ctx.fillText(line, alignX, currentY + state.titleSize * 0.85);
+        currentY += titleLineHeight;
+      }
+      ctx.restore();
+
+      currentY += 24;
+
+      // Divider line
+      ctx.save();
+      const divGrad = ctx.createLinearGradient(paddingX, 0, w - paddingX, 0);
+      divGrad.addColorStop(0, '#0047bb');
+      divGrad.addColorStop(0.5, '#38bdf8');
+      divGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+      ctx.strokeStyle = divGrad;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(paddingX, currentY);
+      ctx.lineTo(w - paddingX, currentY);
+      ctx.stroke();
+      ctx.restore();
+
+      currentY += 38;
+
+      // 7. Body Text (Multi-line & Bullet points)
+      ctx.save();
+      ctx.fillStyle = state.bodyColor;
+      ctx.font = `600 ${state.bodySize}px var(--font-stack), sans-serif`;
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 2;
+
+      const bodyLines = state.bodyText.split('\n');
+      const bodyLineHeight = state.bodySize * 1.55;
+
+      for (let rawLine of bodyLines) {
+        let wrapped = wrapText(ctx, rawLine, w - (paddingX * 2));
+        for (let line of wrapped) {
+          let alignX = paddingX;
+          if (state.textAlign === 'center') {
+            alignX = w / 2;
+            ctx.textAlign = 'center';
+          } else if (state.textAlign === 'right') {
+            alignX = w - paddingX;
+            ctx.textAlign = 'right';
+          } else {
+            ctx.textAlign = 'left';
+          }
+          ctx.fillText(line, alignX, currentY + state.bodySize * 0.8);
+          currentY += bodyLineHeight;
+        }
+      }
+      ctx.restore();
+
+      // 8. Footer Section (Sticky to Bottom Safe Zone)
+      const footerY = h - 90;
+      drawFooter(ctx, paddingX, footerY, w);
+    }
+
+    // Helper: Draw Category Tag Pill
+    function drawCategoryTag(ctx, text, x, y) {
+      ctx.save();
+      const fontSize = 24;
+      ctx.font = `800 ${fontSize}px var(--font-stack), sans-serif`;
+      const textMetrics = ctx.measureText(text);
+      const tagWidth = textMetrics.width + 36;
+      const tagHeight = 44;
+
+      let tagX = x;
+      if (state.textAlign === 'center') {
+        tagX = (state.width - tagWidth) / 2;
+      } else if (state.textAlign === 'right') {
+        tagX = state.width - x - tagWidth;
+      }
+
+      // Pill Background
+      ctx.fillStyle = state.tagBg;
+      ctx.shadowColor = state.tagBg;
+      ctx.shadowBlur = 18;
+      roundRect(ctx, tagX, y, tagWidth, tagHeight, 22, true, false);
+
+      // Tag Text
+      ctx.shadowColor = 'transparent';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText(text, tagX + (tagWidth / 2), y + 30);
+      ctx.restore();
+
+      return y + tagHeight;
+    }
+
+    // Helper: Draw Header Brand Crest
+    function drawHeaderBrand(ctx, x, y, totalW) {
+      ctx.save();
+      // Badge Pill
+      const badgeW = 120;
+      const badgeH = 38;
+      const grad = ctx.createLinearGradient(x, y, x + badgeW, y);
+      grad.addColorStop(0, '#003399');
+      grad.addColorStop(1, '#0052cc');
+      ctx.fillStyle = grad;
+      roundRect(ctx, x, y, badgeW, badgeH, 8, true, false);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `900 20px var(--font-stack), sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText('NOWESA', x + (badgeW / 2), y + 26);
+
+      // Channel Subtitle
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = `700 20px var(--font-stack), sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.fillText('노스웨스트 사람들 | NORTHWEST FOOTBALL', x + badgeW + 16, y + 26);
+
+      // Mini soccer icon
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillText('⚽ OFFICIAL CARD', totalW - x, y + 26);
+      ctx.restore();
+    }
+
+    // Helper: Draw Footer
+    function drawFooter(ctx, x, y, totalW) {
+      ctx.save();
+      // Divider
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, y - 24);
+      ctx.lineTo(totalW - x, y - 24);
+      ctx.stroke();
+
+      // Footer Text (Event Info / Date)
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = `700 22px var(--font-stack), sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.fillText(state.footerText, x, y + 10);
+
+      // Watermark
+      if (state.showWatermark) {
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = `800 22px var(--font-stack), sans-serif`;
+        ctx.fillText('📺 YouTube & Instagram @nowesa.official', totalW - x, y + 10);
+      }
+      ctx.restore();
+    }
+
+    // Helper: Draw Preset Gradients
+    function drawGradientBackground(ctx, w, h, theme) {
+      ctx.save();
+      let grad;
+      if (theme === 'breaking') {
+        grad = ctx.createRadialGradient(w * 0.2, h * 0.2, 50, w * 0.5, h * 0.5, w * 0.9);
+        grad.addColorStop(0, '#590d22');
+        grad.addColorStop(0.5, '#1e050c');
+        grad.addColorStop(1, '#080c14');
+      } else if (theme === 'viewing') {
+        grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, '#002b80');
+        grad.addColorStop(0.6, '#0f172a');
+        grad.addColorStop(1, '#050810');
+      } else if (theme === 'youtube') {
+        grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, '#4a0404');
+        grad.addColorStop(0.5, '#180a0a');
+        grad.addColorStop(1, '#080c14');
+      } else if (theme === 'tactics') {
+        grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, '#064e3b');
+        grad.addColorStop(0.5, '#042f2e');
+        grad.addColorStop(1, '#080c14');
+      } else {
+        // Everton Royal Blue Default
+        grad = ctx.createRadialGradient(w * 0.15, h * 0.2, 50, w * 0.5, h * 0.5, w * 0.85);
+        grad.addColorStop(0, '#003399');
+        grad.addColorStop(0.5, '#001a4d');
+        grad.addColorStop(1, '#080c14');
+      }
+
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+      ctx.restore();
+    }
+
+    // Helper: Draw Stadium Lines / Accent Glow
+    function drawStadiumDecorations(ctx, w, h) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.05)';
+      ctx.lineWidth = 2;
+
+      // Draw subtle pitch center circle in background
+      ctx.beginPath();
+      ctx.arc(w * 0.85, h * 0.85, 240, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(w * 0.85, h * 0.85, 12, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.08)';
+      ctx.fill();
+
+      // Everton Royal glow at top left
+      const topGlow = ctx.createRadialGradient(100, 100, 0, 100, 100, 400);
+      topGlow.addColorStop(0, 'rgba(0, 71, 187, 0.25)');
+      topGlow.addColorStop(1, 'rgba(0, 71, 187, 0)');
+      ctx.fillStyle = topGlow;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.restore();
+    }
+
+    // Helper: Image Cover
+    function drawImageCover(ctx, img, x, y, w, h) {
+      const imgRatio = img.width / img.height;
+      const targetRatio = w / h;
+      let sWidth, sHeight, sx, sy;
+
+      if (imgRatio > targetRatio) {
+        sHeight = img.height;
+        sWidth = img.height * targetRatio;
+        sx = (img.width - sWidth) / 2;
+        sy = 0;
+      } else {
+        sWidth = img.width;
+        sHeight = img.width / targetRatio;
+        sx = 0;
+        sy = (img.height - sHeight) / 2;
+      }
+      ctx.drawImage(img, sx, sy, sWidth, sHeight, x, y, w, h);
+    }
+
+    // Helper: Word Wrapping
+    function wrapText(ctx, text, maxWidth) {
+      const words = text.split(' ');
+      const lines = [];
+      let currentLine = '';
+
+      for (let i = 0; i < words.length; i++) {
+        const testLine = currentLine ? currentLine + ' ' + words[i] : words[i];
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && currentLine !== '') {
+          lines.push(currentLine);
+          currentLine = words[i];
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+      return lines;
+    }
+
+    // Helper: Rounded Rectangle
+    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      if (fill) ctx.fill();
+      if (stroke) ctx.stroke();
+    }
+
+    // Download PNG Action
+    function downloadCardNews() {
+      const link = document.createElement('a');
+      const timestamp = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
+      link.download = `NOWESA_카드뉴스_${timestamp}.png`;
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+      showToast('고화질 카드뉴스(PNG)가 다운로드되었습니다! 📥');
+    }
+
+    // Clipboard Copy
+    async function copyCardToClipboard() {
+      try {
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+          const item = new ClipboardItem({ 'image/png': blob });
+          await navigator.clipboard.write([item]);
+          showToast('카드뉴스 이미지가 클립보드에 복사되었습니다! 📋 (Ctrl+V로 바로 공유)');
+        });
+      } catch (err) {
+        console.error('Clipboard copy failed:', err);
+        showToast('클립보드 복사를 지원하지 않는 브라우저입니다. [다운로드]를 이용해주세요.');
+      }
+    }
+
+    // Toast helper
+    function showToast(msg, icon = '⚽') {
+      const box = document.getElementById('toastBox');
+      document.getElementById('toastIcon').innerText = icon;
+      document.getElementById('toastMsg').innerText = msg;
+      box.classList.add('show');
+      setTimeout(() => {
+        box.classList.remove('show');
+      }, 3500);
+    }
+
+    // Initial Render
+    window.addEventListener('DOMContentLoaded', () => {
+      renderCard();
+    });
+  </script>
+</body>
+</html>
